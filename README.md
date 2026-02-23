@@ -86,7 +86,7 @@ You can train the model from the command line using argparse to specify dataset 
 ***Inference***
 
 We provide our pre-trained weights for direct inference and evaluation. 
-Download the weights from checkpoint.
+Download the weights from [here](https://uofc-my.sharepoint.com/:u:/g/personal/mumu_aktar_ucalgary_ca/IQAdczWH8r6RRLSt5fakmTivAZIcdK_D32qX54eZ6QMF31k?e=2mOUrt).
 
 After downloading, place the weights in your desired directory, then run the main.py with following command for inference:
 ```
