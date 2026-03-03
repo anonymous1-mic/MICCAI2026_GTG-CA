@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
     # Training hyperparameters
     parser.add_argument("--epochs", type=int, default=250, help="Maximum number of epochs")
-    parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate")
+    parser.add_argument("--lr", type=float, default=4e-4, help="Learning rate")
     parser.add_argument("--weight_decay", type=float, default=1e-5, help="Weight decay for optimizer")
     parser.add_argument("--t_max", type=int, default=50, help="T_max for CosineAnnealingLR")
     parser.add_argument("--eta_min", type=float, default=1e-6, help="Minimum LR for scheduler")
