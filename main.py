@@ -113,6 +113,33 @@ if __name__ == "__main__":
 
 
 
-
+    ##############running from terminal#################################
     args = parser.parse_args()
     main(args)
+
+
+    #############running from Spyder####################################
+    
+    # import sys
+
+    # if 'spyder' in sys.modules:
+    #     class Args:
+    #         image_dir = r"/path_to_image_dir"
+    #         label_dir = r"/path_to_label_dir"
+    #         text_dir  = r"/path_to_text_dir"
+    #         output_dir = r"/path_to_result_dir"
+    
+    #         epochs = 250
+    #         lr = 4e-4
+    #         weight_decay = 1e-5
+    #         t_max = 50
+    #         eta_min = 1e-6
+    #         start_epoch = 1
+    #         checkpoint_dir = None
+    #         mode = "train"   # change to "test" or "resume" if needed
+    
+    #     args = Args()
+    # else:
+    #     args = parser.parse_args()
+    
+    # main(args)
