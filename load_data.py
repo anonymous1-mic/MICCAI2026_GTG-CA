@@ -17,7 +17,7 @@ def load_data(images_dir,
     import nibabel as nib
     import numpy as np
 
-    dummy_seg = np.zeros((256,256,160), dtype=np.uint8) 
+    dummy_seg = np.zeros((240,240,155), dtype=np.uint8) 
     dummy_seg_path=os.path.join(output_dir, 'empty_seg.nii.gz')
     nii = nib.Nifti1Image(dummy_seg, affine=np.eye(4))
     print('check the dummy path...............:',dummy_seg_path)
@@ -117,7 +117,7 @@ def load_data(images_dir,
     
 
     train_loader = DataLoader(ds_train, num_workers=4, batch_size=4, shuffle=True, drop_last=True)
-    val_loader = DataLoader(ds_val, num_workers=1, batch_size=1, shuffle=False,  drop_last=False)
+    val_loader = DataLoader(ds_val, num_workers=2, batch_size=2, shuffle=False,  drop_last=False)
     
 
 
