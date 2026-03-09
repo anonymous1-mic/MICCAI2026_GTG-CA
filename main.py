@@ -129,6 +129,9 @@ if __name__ == "__main__":
     #         label_dir = r"/path_to_label_dir"
     #         text_dir  = r"/path_to_text_dir"
     #         output_dir = r"/path_to_result_dir"
+    #         checkpoint_dir=r"/path_to_checkpoint"
+
+    #         os.makedirs(output_dir, exist_ok=True)
     
     #         epochs = 250
     #         lr = 4e-4
