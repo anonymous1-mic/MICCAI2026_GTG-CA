@@ -118,7 +118,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
     import torch.nn.functional as F
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device) 
-    model = model.to(device)            # Move model to cuda:0
+   # model = model.to(device)            # Move model to cuda:0
     model = nn.DataParallel(model)
 
  
