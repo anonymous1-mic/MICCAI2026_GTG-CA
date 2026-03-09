@@ -27,7 +27,7 @@ def main(args):
         feature_size=48,
         text_dim=768,
         use_checkpoint=False,
-    )
+    ).to(device)
 
     optimizer = AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = CosineAnnealingLR(optimizer, T_max=args.t_max, eta_min=args.eta_min)
@@ -37,8 +37,8 @@ def main(args):
     # =====================
     if args.mode in ["resume", "test"]:
         assert args.checkpoint_dir is not None, "You must provide --checkpoint_dir for resume or test"
-        model = model.to(device)            # Move model to cuda:0
-        #model = nn.DataParallel(model)
+        #model = model.to(device)            # Move model to cuda:0
+        #model = nn.DataParallel(model)    #this checkpoint is run without dataparallel, but if you train using dataparallel,need to use the same for inference
         checkpoint = torch.load(args.checkpoint_dir, map_location=device)
         model.load_state_dict(checkpoint["state_dict"])
 
