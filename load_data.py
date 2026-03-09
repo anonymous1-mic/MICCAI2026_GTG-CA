@@ -17,7 +17,7 @@ def load_data(images_dir,
     import nibabel as nib
     import numpy as np
 
-    dummy_seg = np.zeros((240,240,155), dtype=np.uint8) 
+    dummy_seg = np.zeros((256,256,160), dtype=np.uint8) 
     dummy_seg_path=os.path.join(output_dir, 'empty_seg.nii.gz')
     nii = nib.Nifti1Image(dummy_seg, affine=np.eye(4))
     print('check the dummy path...............:',dummy_seg_path)
