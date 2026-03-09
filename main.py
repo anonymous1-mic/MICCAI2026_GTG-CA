@@ -136,7 +136,7 @@ if __name__ == "__main__":
     #         t_max = 50
     #         eta_min = 1e-6
     #         start_epoch = 1
-    #         checkpoint_dir = None
+    #         checkpoint_dir = None ####comment out during inference, since checkpoint path needs to be provided
     #         mode = "train"   # change to "test" or "resume" if needed
     
     #     args = Args()
