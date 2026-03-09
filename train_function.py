@@ -320,6 +320,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
         
         with torch.no_grad():
             dice_metric.reset()
+            has_valid_sample = False
             for batch_idx, batch in enumerate(val_loader):
                
                 img = batch["img"].to(device)
@@ -362,6 +363,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
                     # print('entered')
                     is_dummy = batch["is_dummy"].to(device)
                     valid_mask = ~is_dummy
+                    has_valid_sample=True
                     #print(valid_mask,is_dummy)
                     if valid_mask.sum() > 0:
                         # print('true...................................................')
@@ -396,7 +398,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
                             nib.save(nib.Nifti1Image(single_channel_gt, affine), save_img_path)
     
         # Aggregate Dice once for the epoch
-        if seg is not None and valid_mask.sum() > 0:
+        if has_valid_sample:
             print('entered...................')
             per_class_dice, _ = dice_metric.aggregate()
             mean_dice = per_class_dice.mean().item()
