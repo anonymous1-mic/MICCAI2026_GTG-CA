@@ -37,7 +37,8 @@ def main(args):
     # =====================
     if args.mode in ["resume", "test"]:
         assert args.checkpoint_dir is not None, "You must provide --checkpoint_dir for resume or test"
-
+        model = model.to(device)            # Move model to cuda:0
+        model = nn.DataParallel(model)
         checkpoint = torch.load(args.checkpoint_dir, map_location=device)
         model.load_state_dict(checkpoint["state_dict"])
 
