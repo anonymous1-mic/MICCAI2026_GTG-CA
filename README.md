@@ -93,7 +93,7 @@ You can train the model from the command line using argparse to specify dataset 
 ***Inference***
 
 We provide our pre-trained weights for direct inference and evaluation. 
-Download the weights from [here](https://drive.google.com/file/d/10YZZr8VVESKTAaM-wFnuFl0iQExYIEFj/view?usp=drive_link).
+Download the weights from here: https://drive.google.com/file/d/10YZZr8VVESKTAaM-wFnuFl0iQExYIEFj/view?usp=drive_link 
 
 After downloading, place the weights in your desired directory, then run the main.py with following command for inference:
 ```
