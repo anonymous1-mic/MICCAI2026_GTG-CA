@@ -325,7 +325,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
             for batch_idx, batch in enumerate(val_loader):
                
                 img = batch["img"].to(device)
-                seg = batch["seg"].to(device)  # all samples now have labels
+                seg = batch["seg"].to(device)  
         
                 text = batch.get("text_feature", None)
                 if text is not None:
