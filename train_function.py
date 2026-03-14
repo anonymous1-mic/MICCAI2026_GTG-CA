@@ -113,12 +113,12 @@ def smooth_corr(R, tmin=0.2, tmax=1.0):
 
 
 
-def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, directory_name, output_dir, start_epoch=1,rank=0):
+def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, directory_name, output_dir, start_epoch=1):
     import torch.nn as nn
     import torch.nn.functional as F
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device) 
-   # model = model.to(device)            # Move model to cuda:0
+    model = model.to(device)            # Move model to cuda:0
     model = nn.DataParallel(model)
 
  
@@ -274,7 +274,8 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
                 # print('check loss_recon:',loss_recon)
                 # 
                 valid_mask = ~batch["is_dummy"].bool().to(device)
-                print('check valid mask:', valid_mask)
+                # print('check valid mask:', valid_mask)
+                # print("is_dummy:", batch["is_dummy"])
                 if valid_mask.any():
                     # Compute loss for all valid samples at once
                     loss_seg = criterion(pred_seg[valid_mask], seg[valid_mask])
@@ -286,7 +287,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
                 # print('check if valid:',valid_indices)
 
                 if len(valid_indices) >=2:
-                    print('check if valid:',valid_indices)
+                    # print('check if valid:',valid_indices)
                     image_valid = image_emb[valid_indices]
                     text_valid = text_emb[valid_indices]
                     R = empirical_corr(text_valid)
@@ -324,82 +325,55 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
             for batch_idx, batch in enumerate(val_loader):
                
                 img = batch["img"].to(device)
-                seg = batch.get("seg", None)
-                groundtruth = img    
-                if seg is not None:
-                    seg = seg.to(device)
-
-                B, C, H, W, D = img.shape
-                #print("Min/max/mean before network during val:", img.min(), img.max(), img.mean(),img.shape)
-
-                
+                seg = batch["seg"].to(device)  # all samples now have labels
+        
                 text = batch.get("text_feature", None)
-                
                 if text is not None:
                     text = text.to(device)
-             
+        
+                has_valid_sample = True
+        
+                # Define predictor with optional text
                 predictor_with_text = lambda x: model(x, text)[0]
-                
-                # Create a sliding_window_inference instance with this predictor
+        
+                # Sliding window inference
                 model_inferer_with_text = partial(
                     sliding_window_inference,
-                    roi_size=[128,128,128],
+                    roi_size=[128, 128, 128],
                     sw_batch_size=2,
                     predictor=predictor_with_text,
                     overlap=0.7,
                 )
-                
-                # Run inference
+        
                 pred_seg = model_inferer_with_text(img)
-                # if pred_seg.sum() != 0:
-                #     print("Seg is not zero!", pred_seg.shape, text.shape, seg.shape)
-                    
-                # for i, p in enumerate(pred_seg):
-                #     print(f"Sample {i}: min={p.min().item():.4f}, max={p.max().item():.4f}, mean={p.mean().item():.4f}")
-
-                
-             
-                if seg is not None:
-                    # print('entered')
-                    is_dummy = batch["is_dummy"].to(device)
-                    valid_mask = ~is_dummy
-                    has_valid_sample=True
-                    #print(valid_mask,is_dummy)
-                    if valid_mask.sum() > 0:
-                        # print('true...................................................')
-                        # Prepare lists of valid predictions and labels
-                        val_output_convert = [post_pred(post_sigmoid(p)) for p in pred_seg]
-                        pred_seg = [p for p, d in zip(val_output_convert, is_dummy) if not d]
-                        gt_seg = [s for s, d in zip(seg, is_dummy) if not d]
-                        
-                     
-                        # for p, g in zip(pred_seg, gt_seg):
-                        #     print("pred sum:", p.sum().item(), "gt sum:", g.sum().item(),
-                        #           "overlap:", (p * g).sum().item())
-
-                        # Accumulate metric
-                        dice_metric(y_pred=pred_seg, y=gt_seg)
+        
+                # Post-process predictions
+                val_output_convert = [post_pred(post_sigmoid(p)) for p in pred_seg]
+        
+                # Accumulate dice metric
+                dice_metric(y_pred=val_output_convert, y=seg)
     
                         # Save NIfTI for valid samples
-                        for idx, i in enumerate(valid_mask.nonzero(as_tuple=True)[0]):
-                            subject_id = batch["subject_id"][i]
-                            img_path = os.path.join(directory_name, f"{subject_id}_0000.nii.gz")
-                            save_pred_path = os.path.join(results_dir, f"{subject_id}_pred.nii.gz")
-                            save_img_path = os.path.join(results_dir, f"{subject_id}_gt.nii.gz")
-    
-                            affine = nib.load(img_path).affine
-                            pred_np = pred_seg[idx].detach().cpu().numpy().astype(np.uint8)
-                            seg_np = gt_seg[idx].detach().cpu().numpy().astype(np.uint8)
-    
-                            single_channel_pred = convert_to_single_channel(pred_np)
-                            single_channel_gt = convert_to_single_channel(seg_np)
-    
-                            nib.save(nib.Nifti1Image(single_channel_pred, affine), save_pred_path)
-                            nib.save(nib.Nifti1Image(single_channel_gt, affine), save_img_path)
+                # for idx, i in enumerate(valid_mask.nonzero(as_tuple=True)[0]):
+                #     subject_id = batch["subject_id"][i]
+                #     img_path = os.path.join(directory_name, f"{subject_id}_0000.nii.gz")
+                #     save_pred_path = os.path.join(results_dir, f"{subject_id}_pred.nii.gz")
+                #     save_img_path = os.path.join(results_dir, f"{subject_id}_gt.nii.gz")
+
+                #     affine = nib.load(img_path).affine
+                #     pred_np = pred_seg[idx].detach().cpu().numpy().astype(np.uint8)
+                #     seg_np = gt_seg[idx].detach().cpu().numpy().astype(np.uint8)
+
+                #     single_channel_pred = convert_to_single_channel(pred_np)
+                #     single_channel_gt = convert_to_single_channel(seg_np)
+                    # print('complete 1 batch and check:',valid_mask.sum())
+                    # nib.save(nib.Nifti1Image(single_channel_pred, affine), save_pred_path)
+                    # nib.save(nib.Nifti1Image(single_channel_gt, affine), save_img_path)
     
         # Aggregate Dice once for the epoch
         if has_valid_sample:
-            print('entered...................')
+
+            print('entered to calculate dice...................')
             per_class_dice, _ = dice_metric.aggregate()
             mean_dice = per_class_dice.mean().item()
             print(f"📊 Dice Scores — TC: {per_class_dice[0].item():.4f}, "
@@ -407,6 +381,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
             print(f"🌟 Mean Dice: {mean_dice:.4f}")
         else:
             mean_dice = 0.0
+            print(f"🌟 Mean Dice: {mean_dice:.4f}")
     
         # Save best model
         if mean_dice > best_dice_score:
