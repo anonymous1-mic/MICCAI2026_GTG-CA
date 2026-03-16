@@ -110,9 +110,6 @@ def smooth_corr(R, tmin=0.2, tmax=1.0):
 
     return T
 
-
-
-
 def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, directory_name, output_dir, start_epoch=1):
     import torch.nn as nn
     import torch.nn.functional as F
@@ -187,7 +184,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
 
 
     for epoch in range(start_epoch, max_epochs + 1):
-        print(f"\n🔁 Epoch {epoch}")
+        print(f"\n Epoch {epoch}")
         model.train()
         train_loss = 0.0
     
@@ -287,7 +284,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
             optimizer.step()
            
         train_loss /= len(train_loader)
-        print(f"✅ Training Loss: {train_loss:.4f}")
+        print(f" Training Loss: {train_loss:.4f}")
 
  
         # ----------------------
