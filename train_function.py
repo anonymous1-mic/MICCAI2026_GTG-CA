@@ -119,7 +119,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device) 
     model = model.to(device)            # Move model to cuda:0
-    model = nn.DataParallel(model)
+    model = nn.DataParallel(model)      # if you want to use two gpus, DataParallel can be used. We ran several experiments both using Dataparallel or not depending which machine is used. however, the latest inference model is run without DataParallel.
 
  
     results_dir=output_dir
@@ -163,9 +163,6 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
         print(f"Last model loaded. Resuming training from epoch: {start_epoch}")
         print(f"Resuming with best Dice score: {best_dice_score:.4f}")
 
-
-
-
    
     def compute_binary_dice(pred, gt, epsilon=1e-5):
         pred = pred.astype(np.uint8)
@@ -188,8 +185,6 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
         progress = min((epoch - clip_start) / (max_epoch - clip_start), 1.0)
         return clip_max * (progress ** 2.0)  # linear
 
-    
-
 
     for epoch in range(start_epoch, max_epochs + 1):
         print(f"\n🔁 Epoch {epoch}")
@@ -201,15 +196,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
             img = batch["img"].to(device)
             seg = batch.get("seg", None).to(device)
             text=batch.get("text_feature", None).to(device)
-            # has_text = batch["has_text"].to(device)
-            
-            # print('check image size',img.shape,seg.shape,text.shape)
-
-           
-            # print("Min/max/mean before network:", img.min(), img.max(), img.mean())
-
             groundtruth = img
-
             if seg is not None:
                 seg = seg.to(device)
             
@@ -245,17 +232,12 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
                     mask = mask_generator((C, H, W, D), batch_size=B)  # (B, C, H, W, D)
             else:
                 mask = torch.zeros_like(img)
-            
-            
             # -------------------------
             # Apply mask
             # -------------------------
             masked_input = img * (1.0 - mask)
             
             optimizer.zero_grad()
-            
-                    
-                    
             
             pred_seg, pred_recon, text_emb, image_emb= model(masked_input,text)
             # print('text_emb size check:',text_emb,image_emb,pred_seg.mean().item(),pred_recon.mean().item())
@@ -298,16 +280,12 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
                     gamma = get_gamma(epoch, clip_start=75, clip_max=0.2, max_epoch=200)
                     # print('check if clip is used:',gamma*loss_sim)
                     loss += gamma * loss_sim
-
-                
+    
                 train_loss += loss.item()
             loss.backward()
            
             optimizer.step()
            
-
-            
-
         train_loss /= len(train_loader)
         print(f"✅ Training Loss: {train_loss:.4f}")
 
@@ -372,16 +350,15 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
     
         # Aggregate Dice once for the epoch
         if has_valid_sample:
-
             print('entered to calculate dice...................')
             per_class_dice, _ = dice_metric.aggregate()
             mean_dice = per_class_dice.mean().item()
-            print(f"📊 Dice Scores — TC: {per_class_dice[0].item():.4f}, "
+            print(f" Dice Scores — TC: {per_class_dice[0].item():.4f}, "
                   f"WT: {per_class_dice[1].item():.4f}, ET: {per_class_dice[2].item():.4f}")
-            print(f"🌟 Mean Dice: {mean_dice:.4f}")
+            print(f" Mean Dice: {mean_dice:.4f}")
         else:
             mean_dice = 0.0
-            print(f"🌟 Mean Dice: {mean_dice:.4f}")
+            print(f" Mean Dice: {mean_dice:.4f}")
     
         # Save best model
         if mean_dice > best_dice_score:
@@ -393,7 +370,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, max_epochs, dir
                 "scheduler": scheduler.state_dict(),
                 "best_dice_score": best_dice_score
             }, checkpoint_path)
-            print("✅ Best model saved based on Dice score.")
+            print(" Best model saved based on Dice score.")
         
          
         # Always save last model
