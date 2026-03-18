@@ -8,7 +8,7 @@ This repository provides a PyTorch + MONAI implementation of a multi-task model 
 
 <p align="center"> <img src="github_image2.png" width="800" /> <br> <em>Qualitative comparison on a challenging brain tumor segmentation example. Our method demonstrates superior delineation of tumor boundaries, despite some false positives and false negatives, compared to the other methods.</em>
 
-##Installing Dependencies
+## Installing Dependencies
 
 
 Using `conda` with `requirements.txt`
@@ -25,9 +25,9 @@ Using `conda` with `requirements.txt`
    ```
 
 
-***Getting Started***
+## Getting Started
 
-***Dataset Preparation***
+## Dataset Preparation
 
 
 Before training or evaluation, the dataset should be structured in the imagesTr and labelsTr format.
@@ -79,7 +79,7 @@ for case_dir in data_root.iterdir():
             shutil.copy(label_src, label_dst)
 ```
 
-***Training***
+## Training
 
 
 You can train the model from the command line using argparse to specify dataset paths and hyperparameters.
@@ -93,7 +93,7 @@ You can train the model from the command line using argparse to specify dataset 
   --epochs 100 \
   --lr 1e-4
 ```
-***Inference***
+## Inference
 
 
 We provide our pre-trained weights for direct inference and evaluation. 
