@@ -8,7 +8,7 @@ This repository provides a PyTorch + MONAI implementation of a multi-task model 
 
 <p align="center"> <img src="github_image2.png" width="800" /> <br> <em>Qualitative comparison on a challenging brain tumor segmentation example. Our method demonstrates superior delineation of tumor boundaries, despite some false positives and false negatives, compared to the other methods.</em>
 
-***Installing Dependencies***
+##Installing Dependencies
 
 
 Using `conda` with `requirements.txt`
