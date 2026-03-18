@@ -4,10 +4,9 @@ It is the official implementation page of the paper.
 
 This repository provides a PyTorch + MONAI implementation of a multi-task model for brain tumor segmentation using imaging and text features. The model leverages cross-attention fusion between imaging and text features using a SwinUNETR backbone.
 
-Qualitative comparison on an easy brain tumor segmentation example, where all methods achieve predictions highly consistent with the ground truth.
-<p align="center"> <img src="github_image1.png" width="800" /> <br> <em>
-Qualitative comparison on a challenging brain tumor segmentation example. Our method demonstrates superior delineation of tumor boundaries, despite some false positives and false negatives, compared to the other methods.</em>
-<p align="center"> <img src="github_image2.png" width="800" /> <br> <em></em>
+<p align="center"> <img src="github_image1.png" width="800" /> <br> <em> Qualitative comparison on an easy brain tumor segmentation example, where all methods achieve predictions highly consistent with the ground truth. </em>
+
+<p align="center"> <img src="github_image2.png" width="800" /> <br> <em>Qualitative comparison on a challenging brain tumor segmentation example. Our method demonstrates superior delineation of tumor boundaries, despite some false positives and false negatives, compared to the other methods.</em>
 
 ***Installing Dependencies***
 
