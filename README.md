@@ -28,6 +28,8 @@ Using `conda` with `requirements.txt`
 ***Getting Started***
 
 ***Dataset Preparation***
+
+
 Before training or evaluation, the dataset should be structured in the imagesTr and labelsTr format.
 ```
 multitask_dataset/
@@ -79,6 +81,7 @@ for case_dir in data_root.iterdir():
 
 ***Training***
 
+
 You can train the model from the command line using argparse to specify dataset paths and hyperparameters.
 
 ```
@@ -91,6 +94,7 @@ You can train the model from the command line using argparse to specify dataset 
   --lr 1e-4
 ```
 ***Inference***
+
 
 We provide our pre-trained weights for direct inference and evaluation. 
 Download the weights from here: https://drive.google.com/file/d/10YZZr8VVESKTAaM-wFnuFl0iQExYIEFj/view?usp=drive_link 
