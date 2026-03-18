@@ -7,7 +7,7 @@ This repository provides a PyTorch + MONAI implementation of a multi-task model 
 Qualitative comparison on an easy brain tumor segmentation example, where all methods achieve predictions highly consistent with the ground truth.
 <p align="center"> <img src="github_image1.png" width="800" /> <br> <em>
 Qualitative comparison on a challenging brain tumor segmentation example. Our method demonstrates superior delineation of tumor boundaries, despite some false positives and false negatives, compared to the other methods.</em>
-<p align="center"> <img src="github_image2.png" width="800" /> <br> <em>
+<p align="center"> <img src="github_image2.png" width="800" /> <br> <em></em>
 
 ***Installing Dependencies***
 
